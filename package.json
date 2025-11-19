@@ -1,5 +1,5 @@
 {
-  "name": "@foxreis/tizentube",
+  "name": "tizentube",
   "appName": "TizenTube",
   "version": "1.9.4",
   "description": "Testing High Resolution Thumbnails for TizenTube",
@@ -19,7 +19,7 @@
     "MediaTrackPrevious"
   ],
   "repository": {
-    "url": "https://github.com/reisxd/TizenTube"
+    "url": "https://github.com/OpAayush/TizenTube"
   },
   "license": "GPL-3.0-only"
 }
