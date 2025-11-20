@@ -86,8 +86,8 @@ JSON.parse = function () {
   }
 
   if (r?.continuationContents?.horizontalListContinuation?.items) {
-    hqify(r.continuationContents.horizontalListContinuation.items);
     deArrowify(r.continuationContents.horizontalListContinuation.items);
+    hqify(r.continuationContents.horizontalListContinuation.items);
     addLongPress(r.continuationContents.horizontalListContinuation.items);
   }
 
@@ -177,8 +177,8 @@ for (const key in window._yttv) {
 function processShelves(shelves) {
   for (const shelve of shelves) {
     if (shelve.shelfRenderer) {
-      hqify(shelve.shelfRenderer.content.horizontalListRenderer.items);
       deArrowify(shelve.shelfRenderer.content.horizontalListRenderer.items);
+      hqify(shelve.shelfRenderer.content.horizontalListRenderer.items);
       addLongPress(shelve.shelfRenderer.content.horizontalListRenderer.items);
     }
   }
@@ -230,40 +230,20 @@ function deArrowify(items) {
 
 function hqify(items) {
   for (const item of items) {
-    if (!item.tileRenderer) continue;
     if (item.tileRenderer.style !== "TILE_STYLE_YTLR_DEFAULT") continue;
-    if (!item.tileRenderer.contentId) continue;
-    if (!item.tileRenderer.header?.tileHeaderRenderer?.thumbnail?.thumbnails)
-      continue;
     if (configRead("enableHqThumbnails")) {
       const videoID = item.tileRenderer.contentId;
-      const thumbnails =
-        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails;
-      const queryArgs = thumbnails[0]?.url?.split("?")[1] || "";
-      const maxresUrl = `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
-        queryArgs ? `?${queryArgs}` : ""
-      }`;
-
-      // Check if maxresdefault exists, otherwise fall back to sddefault
-      const img = new Image();
-      img.onerror = () => {
-        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails = [
-          {
-            url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
-              queryArgs ? `?${queryArgs}` : ""
-            }`,
-            width: 640,
-            height: 480,
-          },
-        ];
-      };
-      img.src = maxresUrl;
-
+      const queryArgs =
+        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails[0].url.split(
+          "?"
+        )[1];
       item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails = [
         {
-          url: maxresUrl,
-          width: 1280,
-          height: 720,
+          url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
+            queryArgs ? `?${queryArgs}` : ""
+          }`,
+          width: 640,
+          height: 480,
         },
       ];
     }
