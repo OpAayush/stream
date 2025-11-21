@@ -31,8 +31,8 @@ const apps = {
           [
             new tizen.ApplicationControlData("module", [
               JSON.stringify({
-                moduleName: "@opaayush/tizentube",
-                moduleType: "npm",
+                moduleName: "opaayush/tizentube",
+                moduleType: "gh",
                 args: launchData,
               }),
             ]),
@@ -48,7 +48,7 @@ const dialServer = new dial.Server({
   expressApp: app,
   port: PORT,
   prefix: "/dial",
-  manufacturer: "Reis Can",
+  manufacturer: "OpAayush",
   modelName: "TizenBrew",
   friendlyName: "TizenTube",
   delegate: {

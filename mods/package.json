@@ -8,7 +8,7 @@
     "build": "rollup -c rollup.config.js"
   },
   "keywords": [],
-  "author": "Reis Can, YouTube WebOs contributors",
+  "author": "Reis Can, YouTube WebOs contributors, OpAayush",
   "license": "GPL-3.0-only",
   "dependencies": {
     "@babel/preset-env": "^7.22.9",

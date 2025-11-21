@@ -14,7 +14,7 @@ if (window.h5vcc && window.h5vcc.tizentube) {
 
   function getLatestRelease() {
     return fetch(
-      "https://api.github.com/repos/reisxd/TizenTubeCobalt/releases/latest"
+      "https://api.github.com/repos/OpAayush/TizenTubeCobalt/releases/latest"
     ).then((response) => {
       if (!response.ok) {
         throw new Error("Network response was not ok");
