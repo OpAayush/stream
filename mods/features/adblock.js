@@ -230,22 +230,66 @@ function deArrowify(items) {
 
 function hqify(items) {
   for (const item of items) {
-    if (item.tileRenderer.style !== "TILE_STYLE_YTLR_DEFAULT") continue;
+    // --- Safety Check ---
+    // Make sure the path to the thumbnail URL exists before we try to read it.
+    // This prevents errors on new or unknown tile types.
+    if (
+      !item.tileRenderer?.header?.tileHeaderRenderer?.thumbnail?.thumbnails?.[0]
+        ?.url
+    ) {
+      continue;
+    }
+
+    const originalUrl =
+      item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails[0].url;
+
+    // --- Safety Check 2 ---
+    // Ensure it's a standard YouTube video thumbnail URL.
+    // This will skip things like channel icons which have a different URL structure.
+    if (!originalUrl.includes("i.ytimg.com/vi/")) {
+      continue;
+    }
+
     if (configRead("enableHqThumbnails")) {
-      const videoID = item.tileRenderer.contentId;
-      const queryArgs =
-        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails[0].url.split(
-          "?"
-        )[1];
-      item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails = [
-        {
-          url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
-            queryArgs ? `?${queryArgs}` : ""
-          }`,
-          width: 640,
-          height: 480,
-        },
-      ];
+      try {
+        // --- FIX FOR PLAYLISTS/MIXES ---
+        // We get the videoID from the thumbnail URL itself, not from 'contentId'.
+        // For playlists, 'contentId' is 'PL...' which breaks the thumbnail URL.
+        // The thumbnail URL *always* has the correct video ID.
+        // e.g., https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg?query
+
+        const urlObj = new URL(originalUrl);
+        const pathParts = urlObj.pathname.split("/"); // ["", "vi", "VIDEO_ID", "hqdefault.jpg"]
+        const videoID = pathParts[2]; // This gets the VIDEO_ID
+        const queryArgs = urlObj.search; // This gets the full query string (e.g., "?sqp=...")
+
+        if (!videoID) continue; // Skip if we couldn't parse a video ID
+
+        // --- FIX FOR MAX RES FALLBACK ---
+        // We replace the thumbnails array with a new array.
+        // The client will try to load them in order.
+        // 1. Try maxresdefault.jpg (1280x720 or 1920x1080)
+        // 2. If that fails or isn't available, it will fall back to sddefault.jpg (640x480)
+        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails = [
+          {
+            url: `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
+              queryArgs || ""
+            }`,
+            width: 1280,
+            height: 720,
+          },
+          {
+            url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
+              queryArgs || ""
+            }`,
+            width: 640,
+            height: 480,
+          },
+        ];
+      } catch (e) {
+        // If something goes wrong (like a weird URL), log it and continue
+        console.error("TizenTube: Failed to hqify thumbnail", e, originalUrl);
+      }
     }
   }
 }

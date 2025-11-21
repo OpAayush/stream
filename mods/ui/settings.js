@@ -25,12 +25,6 @@ export default function modernUI(update, parameters) {
             "1. Star the GitHub repository to help increase its visibility."
           ),
           overlayMessageRenderer("2. Share TizenTube with others."),
-          overlayMessageRenderer(
-            "If you would like to contribute financially, consider donating:"
-          ),
-          overlayMessageRenderer(
-            "- GitHub Sponsors: https://github.com/sponsors/reisxd"
-          ),
         ]),
       },
     },
@@ -233,7 +227,7 @@ export default function modernUI(update, parameters) {
   showModal(
     {
       title: "TizenTube Settings",
-      subtitle: "Made by Reis Can (reisxd) with ❤️",
+      subtitle: "Made by Reis Can modified by OpAayush",
     },
     overlayPanelItemListRenderer(
       buttons,
