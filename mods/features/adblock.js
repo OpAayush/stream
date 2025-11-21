@@ -91,12 +91,44 @@ JSON.parse = function () {
     addLongPress(r.continuationContents.horizontalListContinuation.items);
   }
 
+  if (r?.contents?.singleColumnWatchNextResults?.results?.results?.contents) {
+    for (const content of r.contents.singleColumnWatchNextResults.results
+      .results.contents) {
+      if (content.shelfRenderer?.content?.horizontalListRenderer?.items) {
+        hqify(content.shelfRenderer.content.horizontalListRenderer.items);
+        deArrowify(content.shelfRenderer.content.horizontalListRenderer.items);
+        addLongPress(
+          content.shelfRenderer.content.horizontalListRenderer.items
+        );
+      }
+      if (content.itemSectionRenderer?.contents) {
+        for (const item of content.itemSectionRenderer.contents) {
+          if (item.compactVideoRenderer?.thumbnail?.thumbnails) {
+            hqifyCompactRenderer(item.compactVideoRenderer);
+          }
+        }
+      }
+    }
+  }
+
+  // Add HQ thumbnails for autoplay next video
+  if (
+    r?.playerOverlays?.playerOverlayRenderer?.autoplay
+      ?.playerOverlayAutoplayRenderer?.videoDetails?.compactVideoRenderer
+      ?.thumbnail?.thumbnails
+  ) {
+    hqifyCompactRenderer(
+      r.playerOverlays.playerOverlayRenderer.autoplay
+        .playerOverlayAutoplayRenderer.videoDetails.compactVideoRenderer
+    );
+  }
+
   if (
     !configRead("enableShorts") &&
     r?.contents?.tvBrowseRenderer?.content?.tvSurfaceContentRenderer?.content
   ) {
     r.contents.tvBrowseRenderer.content.tvSurfaceContentRenderer.content.sectionListRenderer.contents =
-      r.contents.tvBrowseRenderer.content.tvSurfaceContentRenderer.content.sectionListRenderer.contents.filter(
+      r.contents.tvBrowseRenderer.content.tvSurfaceContentRenderer.content.sectionListRenderer.content.sectionListRenderer.contents.filter(
         (shelve) =>
           shelve.shelfRenderer?.tvhtml5ShelfRendererType !==
           "TVHTML5_SHELF_RENDERER_TYPE_SHORTS"
@@ -240,57 +272,71 @@ function hqify(items) {
       continue;
     }
 
-    const originalUrl =
-      item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails[0].url;
+    const thumbnails =
+      item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails;
+    hqifyThumbnailArray(thumbnails);
+  }
+}
 
-    // --- Safety Check 2 ---
-    // Ensure it's a standard YouTube video thumbnail URL.
-    // This will skip things like channel icons which have a different URL structure.
-    if (!originalUrl.includes("i.ytimg.com/vi/")) {
-      continue;
-    }
+function hqifyCompactRenderer(compactVideoRenderer) {
+  if (!compactVideoRenderer?.thumbnail?.thumbnails?.[0]?.url) {
+    return;
+  }
+  hqifyThumbnailArray(compactVideoRenderer.thumbnail.thumbnails);
+}
 
-    if (configRead("enableHqThumbnails")) {
-      try {
-        // --- FIX FOR PLAYLISTS/MIXES ---
-        // We get the videoID from the thumbnail URL itself, not from 'contentId'.
-        // For playlists, 'contentId' is 'PL...' which breaks the thumbnail URL.
-        // The thumbnail URL *always* has the correct video ID.
-        // e.g., https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg?query
+function hqifyThumbnailArray(thumbnails) {
+  if (!configRead("enableHqThumbnails")) return;
+  if (!thumbnails || thumbnails.length === 0) return;
 
-        const urlObj = new URL(originalUrl);
-        const pathParts = urlObj.pathname.split("/"); // ["", "vi", "VIDEO_ID", "hqdefault.jpg"]
-        const videoID = pathParts[2]; // This gets the VIDEO_ID
-        const queryArgs = urlObj.search; // This gets the full query string (e.g., "?sqp=...")
+  const originalUrl = thumbnails[0].url;
 
-        if (!videoID) continue; // Skip if we couldn't parse a video ID
+  // --- Safety Check 2 ---
+  // Ensure it's a standard YouTube video thumbnail URL.
+  // This will skip things like channel icons which have a different URL structure.
+  if (!originalUrl.includes("i.ytimg.com/vi/")) {
+    return;
+  }
 
-        // --- FIX FOR MAX RES FALLBACK ---
-        // We replace the thumbnails array with a new array.
-        // The client will try to load them in order.
-        // 1. Try maxresdefault.jpg (1280x720 or 1920x1080)
-        // 2. If that fails or isn't available, it will fall back to sddefault.jpg (640x480)
-        item.tileRenderer.header.tileHeaderRenderer.thumbnail.thumbnails = [
-          {
-            url: `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
-              queryArgs || ""
-            }`,
-            width: 1280,
-            height: 720,
-          },
-          {
-            url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
-              queryArgs || ""
-            }`,
-            width: 640,
-            height: 480,
-          },
-        ];
-      } catch (e) {
-        // If something goes wrong (like a weird URL), log it and continue
-        console.error("TizenTube: Failed to hqify thumbnail", e, originalUrl);
+  try {
+    // --- FIX FOR PLAYLISTS/MIXES ---
+    // We get the videoID from the thumbnail URL itself, not from 'contentId'.
+    // For playlists, 'contentId' is 'PL...' which breaks the thumbnail URL.
+    // The thumbnail URL *always* has the correct video ID.
+    // e.g., https://i.ytimg.com/vi/VIDEO_ID/hqdefault.jpg?query
+
+    const urlObj = new URL(originalUrl);
+    const pathParts = urlObj.pathname.split("/"); // ["", "vi", "VIDEO_ID", "hqdefault.jpg"]
+    const videoID = pathParts[2]; // This gets the VIDEO_ID
+    const queryArgs = urlObj.search; // This gets the full query string (e.g., "?sqp=...")
+
+    if (!videoID) return; // Skip if we couldn't parse a video ID
+
+    // --- FIX FOR MAX RES FALLBACK ---
+    // We replace the thumbnails array with a new array.
+    // The client will try to load them in order.
+    // 1. Try maxresdefault.jpg (1280x720 or 1920x1080)
+    // 2. If that fails or isn't available, it will fall back to sddefault.jpg (640x480)
+    thumbnails.length = 0; // Clear existing array
+    thumbnails.push(
+      {
+        url: `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
+          queryArgs || ""
+        }`,
+        width: 1280,
+        height: 720,
+      },
+      {
+        url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
+          queryArgs || ""
+        }`,
+        width: 640,
+        height: 480,
       }
-    }
+    );
+  } catch (e) {
+    // If something goes wrong (like a weird URL), log it and continue
+    console.error("TizenTube: Failed to hqify thumbnail", e, originalUrl);
   }
 }
 

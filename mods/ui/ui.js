@@ -189,7 +189,15 @@ function execute_once_dom_loaded() {
   }, 2000);
 
   // Fix UI issues, again. Love, Googol.
-
+  try {
+    const originalSetPlaybackQualityRange =
+      HTMLVideoElement.prototype.setPlaybackQualityRange;
+    HTMLVideoElement.prototype.setPlaybackQualityRange = function () {
+      return originalSetPlaybackQualityRange.call(this, "hd2160", "hd2160");
+    };
+  } catch (e) {
+    console.error("Failed to force 2160p:", e);
+  }
   if (configRead("enableFixedUI")) {
     try {
       const observer = new MutationObserver((_, _2) => {
