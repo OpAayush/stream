@@ -29,26 +29,52 @@ JSON.parse = function () {
   if (r.adSlots && configRead("enableAdBlock")) {
     r.adSlots = [];
   }
-
   if (r?.streamingData?.adaptiveFormats) {
-    // Remove quality restrictions
+    // Remove quality restrictions and ensure all qualities are available
     r.streamingData.adaptiveFormats = r.streamingData.adaptiveFormats.map(
       (format) => {
+        // Remove restrictions that might limit quality
+        delete format.targetDurationSec;
+        delete format.maxDvrDurationSec;
+
+        // Ensure quality labels are preserved and formats are marked as available
         if (format.qualityLabel) {
-          // Remove any quality restrictions
-          delete format.targetDurationSec;
+          format.quality = format.quality || "hd1080";
         }
         return format;
       }
     );
   }
 
-  // Force enable higher qualities in player config
-  if (r?.responseContext?.serviceTrackingParams) {
-    // Add higher quality support flag
-    if (!r.playbackTracking) r.playbackTracking = {};
-    r.playbackTracking.videostatsPlaybackUrl =
-      r.playbackTracking?.videostatsPlaybackUrl || {};
+  // Force set default quality to 1440p (or highest available)
+  if (r?.playerConfig?.streamSelectionConfig) {
+    r.playerConfig.streamSelectionConfig.maxBitrate = "MAX";
+  }
+
+  if (r?.responseContext?.webResponseContext) {
+    if (!r.responseContext.webResponseContext.playerConfig) {
+      r.responseContext.webResponseContext.playerConfig = {};
+    }
+    r.responseContext.webResponseContext.playerConfig.preferredQuality =
+      "hd1440";
+  }
+
+  // Force enable higher qualities in playback tracking
+  if (r?.playbackTracking) {
+    r.playbackTracking.setAutoQuality = false;
+  }
+
+  // Set quality preference in player response
+  if (r?.videoDetails) {
+    if (!r.playerConfig) r.playerConfig = {};
+    r.playerConfig.audioConfig = r.playerConfig.audioConfig || {};
+    r.playerConfig.audioConfig.enablePerFormatLoudness = false;
+
+    // Force quality selection
+    if (!r.streamingData) r.streamingData = {};
+    r.streamingData.formatSelection = {
+      selectedQuality: "hd1440",
+    };
   }
   // Drop "masthead" ad from home screen
   if (
@@ -346,27 +372,13 @@ function hqifyThumbnailArray(thumbnails) {
     // 1. Try maxresdefault.jpg (1280x720 or 1920x1080)
     // 2. If that fails or isn't available, it will fall back to sddefault.jpg (640x480)
     thumbnails.length = 0; // Clear existing array
-    thumbnails.push(
-      {
-        url: `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
-          queryArgs || ""
-        }`,
-        width: 1280,
-        height: 720,
-      },
-      {
-        url: `https://i.ytimg.com/vi/${videoID}/sddefault.jpg${
-          queryArgs || ""
-        }`,
-        width: 640,
-        height: 480,
-      },
-      {
-        url: `https://i.ytimg.com/vi/${videoID}/0.jpg${queryArgs || ""}`,
-        width: 480,
-        height: 360,
-      }
-    );
+    thumbnails.push({
+      url: `https://i.ytimg.com/vi/${videoID}/maxresdefault.jpg${
+        queryArgs || ""
+      }`,
+      width: 1280,
+      height: 720,
+    });
   } catch (e) {
     // If something goes wrong (like a weird URL), log it and continue
     console.error("TizenTube: Failed to hqify thumbnail", e, originalUrl);
