@@ -1,13 +1,16 @@
 {
   "name": "tizentube",
   "appName": "TizenTube",
-  "version": "1.9.8",
-  "description": "again check 1",
+  "version": "1.9.9",
+  "description": "again check 2",
   "packageType": "mods",
   "websiteURL": "https://youtube.com/tv?additionalDataUrl=http%3A%2F%2Flocalhost%3A8085%2Fdial%2Fapps%2FYouTube",
   "main": "dist/userScript.js",
   "author": "Reis Can",
   "serviceFile": "dist/service.js",
+  "scripts": {
+    "build": "rollup -c service/rollup.config.js && rollup -c userScript/rollup.config.js"
+  },
   "keys": [
     "MediaPlayPause",
     "MediaPlay",

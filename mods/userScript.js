@@ -11,27 +11,17 @@ const logColors = {
   debug: "\u001b[30m",
 };
 
-const MAX_LENGTH = 1800; // leave room for code fence
+const MAX_LENGTH = 1800;
 
-async function sendWebhook(message, username = "Console Logger") {
+function sendWebhook(message, username = "Console Logger") {
   try {
-    const res = await fetch(webhookUrl, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ content: message, username }),
-    });
-    if (!res.ok) {
-      if (res.status === 429) {
-        const retry = parseInt(res.headers.get("retry-after") || "1", 10);
-        setTimeout(() => sendWebhook(message, username), retry * 1000);
-      } else {
-        originalConsole.error(
-          "Webhook send failed:",
-          res.status,
-          await res.text()
-        );
-      }
-    }
+    const xhr = new XMLHttpRequest();
+    xhr.open("POST", webhookUrl, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onerror = function () {
+      originalConsole.error("Webhook XHR error");
+    };
+    xhr.send(JSON.stringify({ content: message, username }));
   } catch (e) {
     originalConsole.error("Webhook error:", e);
   }
@@ -51,19 +41,22 @@ function splitMessage(message, maxLength) {
   return chunks;
 }
 
-async function sendImmediate(type, message) {
+function sendImmediate(type, message) {
   const color = logColors[type] || "";
-  const formatted = `${color}${message}\u001b[0m`;
+  const formatted = color + message + "\u001b[0m";
   const parts = splitMessage(formatted, MAX_LENGTH);
   for (const part of parts) {
-    await sendWebhook(`\`\`\`ansi\n${part}\n\`\`\``);
+    sendWebhook("```ansi\n" + part + "\n```");
   }
 }
 
-["log", "info", "warn", "error", "debug"].forEach((method) => {
-  console[method] = function (...args) {
+["log", "info", "warn", "error", "debug"].forEach(function (method) {
+  console[method] = function () {
+    const args = Array.prototype.slice.call(arguments);
     const message = args
-      .map((a) => (typeof a === "string" ? a : JSON.stringify(a)))
+      .map(function (a) {
+        return typeof a === "string" ? a : JSON.stringify(a);
+      })
       .join(" ");
     sendImmediate(method, message);
     originalConsole[method].apply(console, args);
@@ -72,6 +65,7 @@ async function sendImmediate(type, message) {
 
 console.log("User script loaded: Webhook console logger");
 
+// ...existing code...
 import "whatwg-fetch";
 import "core-js/proposals/object-getownpropertydescriptors";
 import "@formatjs/intl-getcanonicallocales/polyfill.iife";

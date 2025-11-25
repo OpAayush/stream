@@ -19,38 +19,10 @@ var require$$3$2 = require('zlib');
 var require$$0$7 = require('buffer');
 var require$$8$1 = require('querystring');
 
-function _OverloadYield(e, d) {
-  this.v = e, this.k = d;
-}
 function _arrayLikeToArray(r, a) {
   (null == a || a > r.length) && (a = r.length);
   for (var e = 0, n = Array(a); e < a; e++) n[e] = r[e];
   return n;
-}
-function asyncGeneratorStep(n, t, e, r, o, a, c) {
-  try {
-    var i = n[a](c),
-      u = i.value;
-  } catch (n) {
-    return void e(n);
-  }
-  i.done ? t(u) : Promise.resolve(u).then(r, o);
-}
-function _asyncToGenerator(n) {
-  return function () {
-    var t = this,
-      e = arguments;
-    return new Promise(function (r, o) {
-      var a = n.apply(t, e);
-      function _next(n) {
-        asyncGeneratorStep(a, r, o, _next, _throw, "next", n);
-      }
-      function _throw(n) {
-        asyncGeneratorStep(a, r, o, _next, _throw, "throw", n);
-      }
-      _next(void 0);
-    });
-  };
 }
 function _createForOfIteratorHelper(r, e) {
   var t = "undefined" != typeof Symbol && r[Symbol.iterator] || r["@@iterator"];
@@ -129,179 +101,6 @@ function _objectSpread2(e) {
   }
   return e;
 }
-function _regenerator() {
-  /*! regenerator-runtime -- Copyright (c) 2014-present, Facebook, Inc. -- license (MIT): https://github.com/babel/babel/blob/main/packages/babel-helpers/LICENSE */
-  var e,
-    t,
-    r = "function" == typeof Symbol ? Symbol : {},
-    n = r.iterator || "@@iterator",
-    o = r.toStringTag || "@@toStringTag";
-  function i(r, n, o, i) {
-    var c = n && n.prototype instanceof Generator ? n : Generator,
-      u = Object.create(c.prototype);
-    return _regeneratorDefine(u, "_invoke", function (r, n, o) {
-      var i,
-        c,
-        u,
-        f = 0,
-        p = o || [],
-        y = false,
-        G = {
-          p: 0,
-          n: 0,
-          v: e,
-          a: d,
-          f: d.bind(e, 4),
-          d: function (t, r) {
-            return i = t, c = 0, u = e, G.n = r, a;
-          }
-        };
-      function d(r, n) {
-        for (c = r, u = n, t = 0; !y && f && !o && t < p.length; t++) {
-          var o,
-            i = p[t],
-            d = G.p,
-            l = i[2];
-          r > 3 ? (o = l === n) && (u = i[(c = i[4]) ? 5 : (c = 3, 3)], i[4] = i[5] = e) : i[0] <= d && ((o = r < 2 && d < i[1]) ? (c = 0, G.v = n, G.n = i[1]) : d < l && (o = r < 3 || i[0] > n || n > l) && (i[4] = r, i[5] = n, G.n = l, c = 0));
-        }
-        if (o || r > 1) return a;
-        throw y = true, n;
-      }
-      return function (o, p, l) {
-        if (f > 1) throw TypeError("Generator is already running");
-        for (y && 1 === p && d(p, l), c = p, u = l; (t = c < 2 ? e : u) || !y;) {
-          i || (c ? c < 3 ? (c > 1 && (G.n = -1), d(c, u)) : G.n = u : G.v = u);
-          try {
-            if (f = 2, i) {
-              if (c || (o = "next"), t = i[o]) {
-                if (!(t = t.call(i, u))) throw TypeError("iterator result is not an object");
-                if (!t.done) return t;
-                u = t.value, c < 2 && (c = 0);
-              } else 1 === c && (t = i.return) && t.call(i), c < 2 && (u = TypeError("The iterator does not provide a '" + o + "' method"), c = 1);
-              i = e;
-            } else if ((t = (y = G.n < 0) ? u : r.call(n, G)) !== a) break;
-          } catch (t) {
-            i = e, c = 1, u = t;
-          } finally {
-            f = 1;
-          }
-        }
-        return {
-          value: t,
-          done: y
-        };
-      };
-    }(r, o, i), true), u;
-  }
-  var a = {};
-  function Generator() {}
-  function GeneratorFunction() {}
-  function GeneratorFunctionPrototype() {}
-  t = Object.getPrototypeOf;
-  var c = [][n] ? t(t([][n]())) : (_regeneratorDefine(t = {}, n, function () {
-      return this;
-    }), t),
-    u = GeneratorFunctionPrototype.prototype = Generator.prototype = Object.create(c);
-  function f(e) {
-    return Object.setPrototypeOf ? Object.setPrototypeOf(e, GeneratorFunctionPrototype) : (e.__proto__ = GeneratorFunctionPrototype, _regeneratorDefine(e, o, "GeneratorFunction")), e.prototype = Object.create(u), e;
-  }
-  return GeneratorFunction.prototype = GeneratorFunctionPrototype, _regeneratorDefine(u, "constructor", GeneratorFunctionPrototype), _regeneratorDefine(GeneratorFunctionPrototype, "constructor", GeneratorFunction), GeneratorFunction.displayName = "GeneratorFunction", _regeneratorDefine(GeneratorFunctionPrototype, o, "GeneratorFunction"), _regeneratorDefine(u), _regeneratorDefine(u, o, "Generator"), _regeneratorDefine(u, n, function () {
-    return this;
-  }), _regeneratorDefine(u, "toString", function () {
-    return "[object Generator]";
-  }), (_regenerator = function () {
-    return {
-      w: i,
-      m: f
-    };
-  })();
-}
-function _regeneratorAsync(n, e, r, t, o) {
-  var a = _regeneratorAsyncGen(n, e, r, t, o);
-  return a.next().then(function (n) {
-    return n.done ? n.value : a.next();
-  });
-}
-function _regeneratorAsyncGen(r, e, t, o, n) {
-  return new _regeneratorAsyncIterator(_regenerator().w(r, e, t, o), n || Promise);
-}
-function _regeneratorAsyncIterator(t, e) {
-  function n(r, o, i, f) {
-    try {
-      var c = t[r](o),
-        u = c.value;
-      return u instanceof _OverloadYield ? e.resolve(u.v).then(function (t) {
-        n("next", t, i, f);
-      }, function (t) {
-        n("throw", t, i, f);
-      }) : e.resolve(u).then(function (t) {
-        c.value = t, i(c);
-      }, function (t) {
-        return n("throw", t, i, f);
-      });
-    } catch (t) {
-      f(t);
-    }
-  }
-  var r;
-  this.next || (_regeneratorDefine(_regeneratorAsyncIterator.prototype), _regeneratorDefine(_regeneratorAsyncIterator.prototype, "function" == typeof Symbol && Symbol.asyncIterator || "@asyncIterator", function () {
-    return this;
-  })), _regeneratorDefine(this, "_invoke", function (t, o, i) {
-    function f() {
-      return new e(function (e, r) {
-        n(t, i, e, r);
-      });
-    }
-    return r = r ? r.then(f, f) : f();
-  }, true);
-}
-function _regeneratorDefine(e, r, n, t) {
-  var i = Object.defineProperty;
-  try {
-    i({}, "", {});
-  } catch (e) {
-    i = 0;
-  }
-  _regeneratorDefine = function (e, r, n, t) {
-    function o(r, n) {
-      _regeneratorDefine(e, r, function (e) {
-        return this._invoke(r, n, e);
-      });
-    }
-    r ? i ? i(e, r, {
-      value: n,
-      enumerable: !t,
-      configurable: !t,
-      writable: !t
-    }) : e[r] = n : (o("next", 0), o("throw", 1), o("return", 2));
-  }, _regeneratorDefine(e, r, n, t);
-}
-function _regeneratorKeys(e) {
-  var n = Object(e),
-    r = [];
-  for (var t in n) r.unshift(t);
-  return function e() {
-    for (; r.length;) if ((t = r.pop()) in n) return e.value = t, e.done = false, e;
-    return e.done = true, e;
-  };
-}
-function _regeneratorValues(e) {
-  if (null != e) {
-    var t = e["function" == typeof Symbol && Symbol.iterator || "@@iterator"],
-      r = 0;
-    if (t) return t.call(e);
-    if ("function" == typeof e.next) return e;
-    if (!isNaN(e.length)) return {
-      next: function () {
-        return e && r >= e.length && (e = void 0), {
-          value: e && e[r++],
-          done: !e
-        };
-      }
-    };
-  }
-  throw new TypeError(typeof e + " is not iterable");
-}
 function _toPrimitive(t, r) {
   if ("object" != typeof t || !t) return t;
   var e = t[Symbol.toPrimitive];
@@ -331,74 +130,6 @@ function _unsupportedIterableToArray(r, a) {
     var t = {}.toString.call(r).slice(8, -1);
     return "Object" === t && r.constructor && (t = r.constructor.name), "Map" === t || "Set" === t ? Array.from(r) : "Arguments" === t || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(t) ? _arrayLikeToArray(r, a) : void 0;
   }
-}
-function _regeneratorRuntime() {
-
-  var r = _regenerator(),
-    e = r.m(_regeneratorRuntime),
-    t = (Object.getPrototypeOf ? Object.getPrototypeOf(e) : e.__proto__).constructor;
-  function n(r) {
-    var e = "function" == typeof r && r.constructor;
-    return !!e && (e === t || "GeneratorFunction" === (e.displayName || e.name));
-  }
-  var o = {
-    throw: 1,
-    return: 2,
-    break: 3,
-    continue: 3
-  };
-  function a(r) {
-    var e, t;
-    return function (n) {
-      e || (e = {
-        stop: function () {
-          return t(n.a, 2);
-        },
-        catch: function () {
-          return n.v;
-        },
-        abrupt: function (r, e) {
-          return t(n.a, o[r], e);
-        },
-        delegateYield: function (r, o, a) {
-          return e.resultName = o, t(n.d, _regeneratorValues(r), a);
-        },
-        finish: function (r) {
-          return t(n.f, r);
-        }
-      }, t = function (r, t, o) {
-        n.p = e.prev, n.n = e.next;
-        try {
-          return r(t, o);
-        } finally {
-          e.next = n.n;
-        }
-      }), e.resultName && (e[e.resultName] = n.v, e.resultName = void 0), e.sent = n.v, e.next = n.n;
-      try {
-        return r.call(this, e);
-      } finally {
-        n.p = e.prev, n.n = e.next;
-      }
-    };
-  }
-  return (_regeneratorRuntime = function () {
-    return {
-      wrap: function (e, t, n, o) {
-        return r.w(a(e), t, n, o && o.reverse());
-      },
-      isGeneratorFunction: n,
-      mark: r.m,
-      awrap: function (r, e) {
-        return new _OverloadYield(r, e);
-      },
-      AsyncIterator: _regeneratorAsyncIterator,
-      async: function (r, e, t, o, u) {
-        return (n(e) ? _regeneratorAsyncGen : _regeneratorAsync)(a(r), e, t, o, u);
-      },
-      keys: _regeneratorKeys,
-      values: _regeneratorValues
-    };
-  })();
 }
 
 var commonjsGlobal = typeof globalThis !== 'undefined' ? globalThis : typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
@@ -50619,70 +50350,23 @@ var logColors = {
   error: "\x1B[41m",
   debug: "\x1B[30m"
 };
-var MAX_LENGTH = 1800; // leave room for code fence
-function sendWebhook(_x) {
-  return _sendWebhook.apply(this, arguments);
-}
-function _sendWebhook() {
-  _sendWebhook = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee(message) {
-    var username,
-      res,
-      retry,
-      _args = arguments;
-    return _regeneratorRuntime().wrap(function _callee$(_context) {
-      while (1) switch (_context.prev = _context.next) {
-        case 0:
-          username = _args.length > 1 && _args[1] !== undefined ? _args[1] : "Console Logger";
-          _context.prev = 1;
-          _context.next = 4;
-          return fetch(webhookUrl, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              content: message,
-              username: username
-            })
-          });
-        case 4:
-          res = _context.sent;
-          if (res.ok) {
-            _context.next = 17;
-            break;
-          }
-          if (!(res.status === 429)) {
-            _context.next = 11;
-            break;
-          }
-          retry = parseInt(res.headers.get("retry-after") || "1", 10);
-          setTimeout(function () {
-            return sendWebhook(message, username);
-          }, retry * 1000);
-          _context.next = 17;
-          break;
-        case 11:
-          _context.t0 = originalConsole;
-          _context.t1 = res.status;
-          _context.next = 15;
-          return res.text();
-        case 15:
-          _context.t2 = _context.sent;
-          _context.t0.error.call(_context.t0, "Webhook send failed:", _context.t1, _context.t2);
-        case 17:
-          _context.next = 22;
-          break;
-        case 19:
-          _context.prev = 19;
-          _context.t3 = _context["catch"](1);
-          originalConsole.error("Webhook error:", _context.t3);
-        case 22:
-        case "end":
-          return _context.stop();
-      }
-    }, _callee, null, [[1, 19]]);
-  }));
-  return _sendWebhook.apply(this, arguments);
+var MAX_LENGTH = 1800;
+function sendWebhook(message) {
+  var username = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : "Console Logger";
+  try {
+    var xhr = new XMLHttpRequest();
+    xhr.open("POST", webhookUrl, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+    xhr.onerror = function () {
+      originalConsole.error("Webhook XHR error");
+    };
+    xhr.send(JSON.stringify({
+      content: message,
+      username: username
+    }));
+  } catch (e) {
+    originalConsole.error("Webhook error:", e);
+  }
 }
 function splitMessage(message, maxLength) {
   var chunks = [];
@@ -50706,56 +50390,26 @@ function splitMessage(message, maxLength) {
   if (current) chunks.push(current.trimEnd());
   return chunks;
 }
-function sendImmediate(_x2, _x3) {
-  return _sendImmediate.apply(this, arguments);
-}
-function _sendImmediate() {
-  _sendImmediate = _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2(type, message) {
-    var color, formatted, parts, _iterator2, _step2, part;
-    return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-      while (1) switch (_context2.prev = _context2.next) {
-        case 0:
-          color = logColors[type] || "";
-          formatted = "".concat(color).concat(message, "\x1B[0m");
-          parts = splitMessage(formatted, MAX_LENGTH);
-          _iterator2 = _createForOfIteratorHelper(parts);
-          _context2.prev = 4;
-          _iterator2.s();
-        case 6:
-          if ((_step2 = _iterator2.n()).done) {
-            _context2.next = 12;
-            break;
-          }
-          part = _step2.value;
-          _context2.next = 10;
-          return sendWebhook("```ansi\n".concat(part, "\n```"));
-        case 10:
-          _context2.next = 6;
-          break;
-        case 12:
-          _context2.next = 17;
-          break;
-        case 14:
-          _context2.prev = 14;
-          _context2.t0 = _context2["catch"](4);
-          _iterator2.e(_context2.t0);
-        case 17:
-          _context2.prev = 17;
-          _iterator2.f();
-          return _context2.finish(17);
-        case 20:
-        case "end":
-          return _context2.stop();
-      }
-    }, _callee2, null, [[4, 14, 17, 20]]);
-  }));
-  return _sendImmediate.apply(this, arguments);
+function sendImmediate(type, message) {
+  var color = logColors[type] || "";
+  var formatted = color + message + "\x1B[0m";
+  var parts = splitMessage(formatted, MAX_LENGTH);
+  var _iterator2 = _createForOfIteratorHelper(parts),
+    _step2;
+  try {
+    for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+      var part = _step2.value;
+      sendWebhook("```ansi\n" + part + "\n```");
+    }
+  } catch (err) {
+    _iterator2.e(err);
+  } finally {
+    _iterator2.f();
+  }
 }
 ["log", "info", "warn", "error", "debug"].forEach(function (method) {
   console[method] = function () {
-    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
-      args[_key] = arguments[_key];
-    }
+    var args = Array.prototype.slice.call(arguments);
     var message = args.map(function (a) {
       return typeof a === "string" ? a : JSON.stringify(a);
     }).join(" ");
